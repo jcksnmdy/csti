@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Requirements — Cross-Stage Test Infrastructure</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <p class="site-title"><a href="index.html">Cross-Stage Test Infrastructure (CSTI)</a></p>
+    <p class="site-subtitle">One scenario, every stage: MiL &rarr; PiL &rarr; HIL &rarr; Vehicle-in-the-Loop</p>
+    <nav class="site-nav" aria-label="Site"><ul><li><a href="index.html">Overview</a></li><li><a href="requirements.html" aria-current="page">Requirements</a></li><li><a href="design.html">Design</a></li><li><a href="integration.html">Fusion</a></li><li><a href="traceability.html">Traceability</a></li><li><a href="rationale.html">Rationale</a></li><li><a href="evolution.html">Evolution</a></li><li><a href="glossary.html">Glossary</a></li></ul></nav>
+  </div>
+</header>
+<main>
+<div class="page-head"><h1>Requirements Summary</h1><p class="lede">What CSTI must do, how well, and what it must never do. Each requirement has a unique name, an acceptance criterion and a verification method.</p></div>
+<nav class="toc" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#purpose">Purpose and scope</a></li><li><a href="#stakeholders">Customer, users and stakeholders</a></li><li><a href="#conventions">Conventions</a></li><li><a href="#constraints">Constraints and assumptions</a></li><li><a href="#functional">Functional requirements</a></li><li><a href="#nonfunctional">Non-functional requirements</a></li><li><a href="#safety">Safety requirements</a></li><li><a href="#proposed">Proposed values</a></li><li><a href="#coverage">Coverage check</a></li><li><a href="#tracking">How requirements are tracked</a></li><li><a href="#open">Open issues</a></li></ol></nav>
+  <h2 id="purpose">1. Purpose and scope</h2>
+<p>Automated-vehicle software is tested on a desktop, on the target computer and on the vehicle. Each stage usually keeps its own copy of every test, so tests are rebuilt several times and results cannot be compared. CSTI lets <strong>one scenario run unchanged in four stages</strong>:</p>
+<dl class="defs">
+<dt>MiL (Model-in-the-Loop)</dt><dd>Controls: Simulink controllers against RoadRunner Scenario, with objects taken straight from RoadRunner, unprocessed. Perception: sensor placement and specs checked in RoadRunner, with AURELION adding realistic sensor data and sensor faults on the desktop. No fusion on the vehicle stack and no safety interlock.</dd>
+<dt>PiL (Processor-in-the-Loop)</dt><dd>Controls: each Simulink controller is code-generated separately into a C++ ROS 2 node on the AUTERA AutoBox, fed RoadRunner ground truth over ROS 2. Perception: RTMaps and the C++ object fusion run on the AUTERA, fed AURELION simulated sensor data from the desktop.</dd>
+<dt>HIL (Hardware-in-the-Loop)</dt><dd>The sensor cart: real sensors on a cart feed RTMaps and the full stack on the AUTERA with its safety interlock active, while the Simulink vehicle model on the HIL bench receives the stack’s Ethernet commands.</dd>
+<dt>ViL (Vehicle-in-the-Loop)</dt><dd>The production vehicle on a closed course with real sensors, a safety driver and the full safety chain, with virtual actors injected around its real position.</dd>
+</dl>
+<p>The autonomy stack is <em>outside</em> CSTI. CSTI feeds its inputs, records its outputs and never commands actuators. A <strong>shadow</strong> profile runs the stack live without engaging automation.</p>
+
+  <h2 id="stakeholders">2. Customer, users and stakeholders</h2>
+<p><strong>Customer:</strong> the Virginia Tech HEVT EcoCAR connected and automated vehicles sub-team.</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>User</th><th>What they need from CSTI</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Test engineer</td><td>Write a scenario once, run it in any stage, get verdicts.</td></tr>
+      <tr><td class="nm">Autonomy developer</td><td>Get realistic inputs and replay any run on a desktop.</td></tr>
+      <tr><td class="nm">Safety driver / test operator</td><td>See the stack status and the virtual actors, and stop injection at once.</td></tr>
+      <tr><td class="nm">Competition organizers (secondary)</td><td>Review traceable, reproducible test evidence.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="conventions">3. Conventions</h2>
+<ul>
+<li><strong>Names.</strong> Each requirement has a unique name used on every page. Groups: Functional, Non-functional, Safety and Constraints.</li>
+<li><strong>Priority.</strong> <span class="tag must">Must</span> required; <span class="tag should">Should</span> expected but not essential.</li>
+<li><strong>Verification.</strong> <strong>T</strong> test, <strong>A</strong> analysis, <strong>I</strong> inspection, <strong>D</strong> demonstration.</li>
+<li><strong>Numbers.</strong> Every threshold is a team proposal, linked to the <a href="#proposed">proposed values</a> table.</li>
+<li><strong>Provisional.</strong> Sensor mounting, actuation limits, override thresholds and where camera detection and LiDAR clustering run are not yet settled.</li>
+</ul>
+
+  <h2 id="constraints">4. Constraints and assumptions</h2>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Name</th><th>Constraint or assumption</th></tr></thead>
+    <tbody>
+      <tr id="CON-01"><td class="nm">ROS 2 stack in one container</td><td>The stack runs on the target computer in one container: an ingest middleware syncs and preprocesses sensor data, and ROS 2 does object fusion and the rest. CSTI connects through ROS 2 topics at fusion's inputs.</td></tr>
+      <tr id="CON-02"><td class="nm">Stack not modified</td><td>The stack is not modified for CSTI, apart from launch-time topic remapping.</td></tr>
+      <tr id="CON-03"><td class="nm">Generic hardware, public site</td><td>Hardware is described generically; no vehicle-specific or confidential data appears on this public site.</td></tr>
+      <tr id="CON-04"><td class="nm">Closed course with safety driver</td><td>ViL runs only on a closed course with a safety driver. The vehicle's override, E-stop, mode switch and actuation gateway stay in place, and CSTI never commands them.</td></tr>
+      <tr id="CON-05"><td class="nm">Vehicle localization on ROS 2</td><td>The vehicle publishes its position, heading, velocity and uncertainty on a ROS 2 topic.</td></tr>
+      <tr id="CON-06"><td class="nm">No single vendor format</td><td>CSTI must work with more than one simulator and cannot depend on one vendor's format.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="functional">5. Functional requirements</h2>
+
+  <h3>5.1 Scenario definition</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="FR-01"><td class="nm">Single scenario definition</td><td>The system shall define each test as one scenario holding the road network, actors, triggers and pass/fail criteria.</td><td>A reference scenario with all four parts runs without outside inputs other than stage configuration.</td><td class="v">I, T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+      <tr id="FR-02"><td class="nm">Same scenario in every stage</td><td>The system shall run the same scenario file, unmodified, in every stage.</td><td>Each reference scenario, with the same checksum, completes in every stage.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a>, <a class="cref" href="requirements.html#stakeholders">Competition organizers (secondary)</a></td></tr>
+      <tr id="FR-03"><td class="nm">Open, simulator-independent formats</td><td>The system shall store scenarios in ASAM OpenDRIVE and OpenSCENARIO.</td><td>No reference scenario needs a vendor-specific field.</td><td class="v">I</td><td class="p"><span class="tag must">Must</span></td><td><a class="ref" href="requirements.html#CON-06">No single vendor format</a></td></tr>
+      <tr id="FR-04"><td class="nm">Pre-run validation and ODD check</td><td>The system shall reject an invalid scenario before a run, naming every rule it breaks, including operating-domain limits.</td><td>Each seeded invalid scenario is rejected before arming with the correct cause.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a>, <a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>5.2 Stages and simulation backends</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="FR-05"><td class="nm">Three simulation backends</td><td>The system shall support a desktop simulator (MiL), a RoadRunner-to-ROS 2 publisher (controls PiL), a physics-based sensor simulator (perception MiL and PiL) and a headless object-level player (ViL).</td><td>The reference scenarios run on each backend.</td><td class="v">D</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+      <tr id="FR-06"><td class="nm">Stage selection by configuration</td><td>The system shall select stage and backend by configuration only.</td><td>Switching stage or backend changes no code, scenario or stack.</td><td class="v">I, T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>5.3 Actors and sensors</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="FR-07"><td class="nm">Backend-independent actor state</td><td>The system shall own actor behavior (vehicles, motorcycles, pedestrians) independently of the backend.</td><td>Two backends with the same seed agree within <a class="pv" href="#PV-13">0.10 m (proposed)</a>.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a>, <a class="cref" href="requirements.html#stakeholders">Autonomy developer</a></td></tr>
+      <tr id="FR-08"><td class="nm">Time / actor / ego triggers</td><td>The system shall fire triggers on time, actor state and ego state.</td><td>Each trigger fires on the correct tick in MiL and within one tick in ViL.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+      <tr id="FR-09"><td class="nm">Two sensor fidelity levels (object level and raw)</td><td>The system shall generate sensor data as object lists (optional noise) or raw data (images, point clouds, radar detections, ultrasonic range).</td><td>Each level is selectable per sensor; raw simulated data is used only in MiL and PiL.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a></td></tr>
+      <tr id="FR-10"><td class="nm">Same topics as real sensors, /virtual/ mirror</td><td>The system shall deliver injected data on the stack's existing input topics, identical in format to real sensors in every stage, and keep a separate copy for logging.</td><td>The stack runs unmodified in every stage, and recorded injected data matches real-sensor format.</td><td class="v">I, T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a>, <a class="ref" href="requirements.html#CON-02">Stack not modified</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>5.4 Ego vehicle</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="FR-11"><td class="nm">Plant-model ego (MiL, PiL, HIL)</td><td>In MiL, PiL and HIL, the system shall compute the ego state from a plant model driven by the stack's commands.</td><td>Stack commands change the ego trajectory on the next tick.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+      <tr id="FR-12"><td class="nm">Real-pose ego and placement (ViL)</td><td>In ViL, the system shall place every virtual actor relative to the vehicle's measured position.</td><td>On a surveyed path, logged actor positions match the scenario within <a class="pv" href="#PV-05">1.0 m (proposed)</a>.</td><td class="v">T, A</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a>, <a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>5.5 Fault injection</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="FR-13"><td class="nm">Sensor fault injection</td><td>The system shall inject scheduled sensor faults: dropouts, latency, frozen output, noise, bias, ghost targets and frame drops.</td><td>Each fault appears in the recording at the scheduled time.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a>, <a class="cref" href="requirements.html#stakeholders">Autonomy developer</a></td></tr>
+      <tr id="FR-14"><td class="nm">Network, GNSS and actuator faults</td><td>In MiL, PiL and HIL, the system shall inject network, heartbeat, GNSS-outage and actuator faults to test the stack's fault response.</td><td>Each fault is visible in the recording, together with the stack's response.</td><td class="v">T</td><td class="p"><span class="tag should">Should</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>5.6 Orchestration and campaigns</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="FR-15"><td class="nm">One-action run start</td><td>The system shall start a run, including validation and readiness checks, with one action.</td><td>One command starts a MiL run and reports ready or the failed checks.</td><td class="v">D</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+      <tr id="FR-16"><td class="nm">Unattended campaigns</td><td>The system shall run parameter-sweep campaigns unattended in MiL, PiL and HIL.</td><td>A two-parameter sweep completes unattended; a crashed run is logged and the campaign continues.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+      <tr id="FR-17"><td class="nm">Verdicts linked to recordings</td><td>The system shall give each run a pass/fail verdict linked to its recording, including whether the stack responded correctly to any injected fault.</td><td>Every completed run has a verdict, its deciding criterion and a working recording link.</td><td class="v">I, T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a>, <a class="cref" href="requirements.html#stakeholders">Competition organizers (secondary)</a></td></tr>
+      <tr id="FR-23"><td class="nm">Shadow run profile</td><td>The system shall offer a shadow profile in HIL and ViL: the stack runs live, automation stays off and would-have commands are logged.</td><td>The actuation gateway receives only neutral commands, and the recording holds the would-have commands.</td><td class="v">T, I</td><td class="p"><span class="tag should">Should</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a>, <a class="cref" href="requirements.html#stakeholders">Autonomy developer</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>5.7 Recording and replay</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="FR-18"><td class="nm">Complete timestamped recording</td><td>The system shall record, with timestamps, all inputs, stack outputs and status, ego state, vehicle bus, operator actions and run configuration.</td><td>Every category is present and timestamped in a completed recording.</td><td class="v">I, T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a>, <a class="cref" href="requirements.html#stakeholders">Competition organizers (secondary)</a></td></tr>
+      <tr id="FR-19"><td class="nm">Replay any run in MiL</td><td>The system shall replay any recording, including ViL runs, in MiL with original timing.</td><td>A ViL recording replays in MiL and the stack receives the same message sequence.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a></td></tr>
+      <tr id="FR-20"><td class="nm">MCAP and CAN log recordings</td><td>The system shall store recordings in open formats (MCAP bags, standard CAN logs).</td><td>Recordings open in standard tools without CSTI.</td><td class="v">I, D</td><td class="p"><span class="tag should">Should</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a>, <a class="cref" href="requirements.html#stakeholders">Competition organizers (secondary)</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>5.8 Monitoring</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="FR-21"><td class="nm">Live operator view (ViL)</td><td>During HIL and ViL, the system shall show the operator the run state, the stack's status (feature states, faults, touring mode) and the virtual actors, with a stop control.</td><td>All items are on one screen and update at least once a second.</td><td class="v">D</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+      <tr id="FR-22"><td class="nm">Engineer progress view</td><td>The system shall show campaign progress and verdicts as they arrive.</td><td>A running campaign shows completed runs and their verdicts.</td><td class="v">D</td><td class="p"><span class="tag should">Should</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="nonfunctional">6. Non-functional requirements</h2>
+
+  <h3>6.1 Extensibility and vendor neutrality</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="NFR-01"><td class="nm">New backend = new adapter only</td><td>Adding a simulator shall require only a new adapter.</td><td>The change touches only the adapter and configuration; reference scenarios then run.</td><td class="v">I, D</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a>, <a class="ref" href="requirements.html#CON-06">No single vendor format</a></td></tr>
+      <tr id="NFR-02"><td class="nm">New sensor = add-only change</td><td>Adding a sensor type shall only add to the stack interface, never change it.</td><td>No existing interface definition is modified or removed.</td><td class="v">I</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a></td></tr>
+      <tr id="NFR-03"><td class="nm">Vendor dependencies only in adapters</td><td>Only adapters shall depend on simulator vendor code.</td><td>Dependency review finds vendor code only in adapters.</td><td class="v">I</td><td class="p"><span class="tag must">Must</span></td><td><a class="ref" href="requirements.html#CON-06">No single vendor format</a></td></tr>
+      <tr id="NFR-04"><td class="nm">Portable across nodes</td><td>Runtime components shall run on the desktop and the target computer without code changes.</td><td>The same build runs on both.</td><td class="v">I, D</td><td class="p"><span class="tag should">Should</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>6.2 Timing and accuracy</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="NFR-05"><td class="nm">Injection latency limit</td><td>In ViL, injection latency from pose sample to published data shall not exceed <a class="pv" href="#PV-01">50 ms (proposed)</a>.</td><td>The 99th-percentile latency in a reference run is within <a class="pv" href="requirements.html#PV-01">50 ms (proposed)</a>.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a>, <a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+      <tr id="NFR-06"><td class="nm">Clock offset limit</td><td>Clock offset between any node and the stage clock shall not exceed <a class="pv" href="#PV-02">1 ms (proposed)</a>.</td><td>Logged offsets stay within <a class="pv" href="requirements.html#PV-02">1 ms (proposed)</a> for the whole run.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a></td></tr>
+      <tr id="NFR-07"><td class="nm">Virtual-actor placement accuracy</td><td>In ViL, virtual-actor placement error at 50 m shall not exceed <a class="pv" href="#PV-05">1.0 m (proposed)</a>, given localization within <a class="pv" href="#PV-03">0.20 m (proposed)</a> and <a class="pv" href="#PV-04">0.5° (proposed)</a>.</td><td>An error budget shows the bound holds, confirmed by the surveyed-path test.</td><td class="v">A, T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+      <tr id="NFR-08"><td class="nm">Deterministic MiL runs</td><td>Repeated MiL runs with the same scenario, seed and configuration shall produce identical inputs.</td><td>Two runs produce identical injected data and timestamps.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a>, <a class="cref" href="requirements.html#stakeholders">Competition organizers (secondary)</a></td></tr>
+      <tr id="NFR-09"><td class="nm">Full rate with many actors</td><td>In ViL, the system shall keep full publication rates with up to <a class="pv" href="#PV-06">20 actors (proposed)</a> actors.</td><td>A <a class="pv" href="requirements.html#PV-06">20 actors (proposed)</a> scenario misses no publication periods and stays within <a class="pv" href="requirements.html#PV-01">50 ms (proposed)</a>.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>6.3 Recording integrity</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="NFR-10"><td class="nm">Zero-drop recording</td><td>Recordings shall drop no messages, and any drop shall mark the run invalid.</td><td>A reference run shows no gaps; a forced drop marks the run invalid.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a>, <a class="cref" href="requirements.html#stakeholders">Competition organizers (secondary)</a></td></tr>
+      <tr id="NFR-11"><td class="nm">Faithful replay timing</td><td>Replay shall keep message order and timing within <a class="pv" href="#PV-02">1 ms (proposed)</a>.</td><td>Replay count, order and intervals match the recording.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Autonomy developer</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>6.4 Usability</h3>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="NFR-12"><td class="nm">Always-visible stop control</td><td>The operator stop control shall always be visible during ViL and work with one action.</td><td>Every ViL screen shows the stop control, and one action stops injection.</td><td class="v">I, T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+      <tr id="NFR-13"><td class="nm">Status not shown by color alone</td><td>Fault and feature states shall not rely on color alone.</td><td>Every state shown has a text label.</td><td class="v">I</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+      <tr id="NFR-14"><td class="nm">New-user onboarding time</td><td>A new team member shall modify and run a template scenario in MiL within <a class="pv" href="#PV-07">60 minutes (proposed)</a>.</td><td>Three new members each finish within <a class="pv" href="requirements.html#PV-07">60 minutes (proposed)</a> in a timed trial.</td><td class="v">D</td><td class="p"><span class="tag should">Should</span></td><td><a class="cref" href="requirements.html#stakeholders">Test engineer</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="safety">7. Safety requirements</h2>
+<div class="note safety">
+<p><strong>Safety principle.</strong> CSTI has no safety role. Safety belongs to the stack: a fault detection node watches critical systems, the ACC, LCC and AIN state machines watch for driver overrides, and the safety interlock sends default commands and alerts the driver on any fault. CSTI only adds objects that are not there, listens to the stack's status, and stops injecting when the stack or the operator says so.</p>
+</div>
+  <div class="table-wrap">
+  <table class="req">
+    <thead><tr><th>Name</th><th>Requirement</th><th>Acceptance criterion</th><th>Ver.</th><th>Priority</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr id="SR-01"><td class="nm">Real sensor data never altered</td><td>In ViL, the system shall add synthetic data without blocking, changing or delaying real sensor data.</td><td>Real-sensor recordings with and without CSTI match within <a class="pv" href="requirements.html#PV-02">1 ms (proposed)</a>.</td><td class="v">I, T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+      <tr id="SR-02"><td class="nm">Start injection only when the stack is ready</td><td>In HIL and ViL, the system shall start injecting only when the stack reports no active fault, the scenario has passed validation and the operator confirms the safety driver is ready.</td><td>Failing each condition in turn blocks the start and names the cause.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a>, <a class="cref" href="requirements.html#stakeholders">Competition organizers (secondary)</a></td></tr>
+      <tr id="SR-03"><td class="nm">Stop injection on stack fault or override</td><td>The system shall stop injecting within <a class="pv" href="#PV-10">100 ms (proposed)</a> when the stack reports a fault, a driver override or a disengaged feature.</td><td>Each reported event stops injection within <a class="pv" href="requirements.html#PV-10">100 ms (proposed)</a> and is recorded.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+      <tr id="SR-04"><td class="nm">Stop injection on operator command</td><td>The system shall stop injecting within <a class="pv" href="#PV-10">100 ms (proposed)</a> on operator command.</td><td>One operator action stops injection within <a class="pv" href="requirements.html#PV-10">100 ms (proposed)</a>.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+      <tr id="SR-05"><td class="nm">No pop-in actors</td><td>The system shall never introduce an actor in the ego path closer than <a class="pv" href="#PV-09">2 s (proposed)</a>.</td><td>Such scenarios are rejected; such run-time triggers are suppressed and logged.</td><td class="v">T, A</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+      <tr id="SR-06"><td class="nm">CSTI cannot affect the stack's safety chain</td><td>A CSTI crash, stall or bad output shall not block, delay or change the stack's fault detection, state machines or safety interlock.</td><td>Killing each CSTI component during HIL runs leaves the stack's fault response unchanged.</td><td class="v">T, I</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a>, <a class="cref" href="requirements.html#stakeholders">Competition organizers (secondary)</a></td></tr>
+      <tr id="SR-08"><td class="nm">Record stack faults and state changes</td><td>The system shall record every stack fault, state transition, driver override and interlock default during a run.</td><td>Each such event in a HIL run appears in the recording with its time.</td><td class="v">T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a>, <a class="cref" href="requirements.html#stakeholders">Competition organizers (secondary)</a></td></tr>
+      <tr id="SR-13"><td class="nm">Vehicle-test faults limited to virtual streams</td><td>In ViL, only synthetic sensor streams shall be fault-injected.</td><td>ViL scenarios with network, actuator or GNSS faults are rejected; those fault paths are not deployed on the vehicle.</td><td class="v">I, T</td><td class="p"><span class="tag must">Must</span></td><td><a class="cref" href="requirements.html#stakeholders">Safety driver / test operator</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="proposed">8. Proposed values</h2>
+<p>All values are <span class="tag proposed">proposed</span> by the team, each with a basis and a way to confirm it.</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Quantity</th><th>Value</th><th>Basis</th><th>Confirm by</th></tr></thead>
+    <tbody>
+      <tr id="PV-01"><td>Injection latency (99th percentile)</td><td>&le; 50 ms</td><td>At the speed cap, 50 ms is 0.75 m of travel, inside the placement budget.</td><td>Measure in HIL.</td></tr>
+      <tr id="PV-02"><td>Clock offset to any node</td><td>&le; 1 ms</td><td>Negligible next to the latency limit.</td><td>Measure on the vehicle network.</td></tr>
+      <tr id="PV-03"><td>Localization position error (95%)</td><td>&le; 0.20 m</td><td>Leaves most of the placement budget for heading and latency.</td><td>Measure on the test site.</td></tr>
+      <tr id="PV-04"><td>Localization heading error (95%)</td><td>&le; 0.5&deg;</td><td>About 0.44 m sideways at 50 m.</td><td>Measure on the test site.</td></tr>
+      <tr id="PV-05"><td>Virtual-actor placement error at 50 m (95%)</td><td>&le; 1.0 m</td><td>Keeps a virtual car in its lane; the combined errors above total about 0.89 m.</td><td>Surveyed-path test.</td></tr>
+      <tr id="PV-06"><td>Simultaneous virtual actors in ViL</td><td>20</td><td>Covers a busy multi-lane scene.</td><td>Check the scenario library.</td></tr>
+      <tr id="PV-07"><td>New-user time to run a template scenario</td><td>&le; 60 min</td><td>Onboarding target each semester.</td><td>Timed trial.</td></tr>
+      <tr id="PV-08"><td>Maximum ViL speed</td><td>15 m/s or the site limit, whichever is lower</td><td>Bounds placement error and exposure.</td><td>Safety review.</td></tr>
+      <tr id="PV-09"><td>Minimum time gap for an actor in the ego path</td><td>2 s</td><td>The two-second rule; avoids forced hard braking.</td><td>Safety review; tune in MiL.</td></tr>
+      <tr id="PV-10"><td>Stop-injection reaction time</td><td>&le; 100 ms</td><td>Two latency periods.</td><td>Bench and ViL dry runs.</td></tr>
+      <tr id="PV-13"><td>Cross-backend actor agreement</td><td>&le; 0.10 m</td><td>CSTI computes actor state, so only numerics differ.</td><td>Run on two backends.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+
+
+  <h2 id="coverage">9. Coverage check</h2>
+<p>Each required topic and the requirements that cover it:</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Topic</th><th>Requirements</th></tr></thead>
+    <tbody>
+      <tr><td>One scenario in every stage</td><td><a class="ref" href="requirements.html#FR-01">Single scenario definition</a>, <a class="ref" href="requirements.html#FR-02">Same scenario in every stage</a>, <a class="ref" href="requirements.html#FR-03">Open, simulator-independent formats</a>, <a class="ref" href="requirements.html#FR-06">Stage selection by configuration</a></td></tr>
+      <tr><td>New simulator without stack changes</td><td><a class="ref" href="requirements.html#NFR-01">New backend = new adapter only</a>, <a class="ref" href="requirements.html#NFR-03">Vendor dependencies only in adapters</a>, <a class="ref" href="requirements.html#FR-05">Three simulation backends</a></td></tr>
+      <tr><td>Injection on real position in ViL</td><td><a class="ref" href="requirements.html#FR-12">Real-pose ego and placement (ViL)</a>, <a class="ref" href="requirements.html#FR-10">Same topics as real sensors, /virtual/ mirror</a>, <a class="ref" href="requirements.html#SR-01">Real sensor data never altered</a></td></tr>
+      <tr><td>Latency and sync limits</td><td><a class="ref" href="requirements.html#NFR-05">Injection latency limit</a>, <a class="ref" href="requirements.html#NFR-06">Clock offset limit</a></td></tr>
+      <tr><td>Pose accuracy for placement</td><td><a class="ref" href="requirements.html#NFR-07">Virtual-actor placement accuracy</a>, <a class="pv" href="requirements.html#PV-03">0.20 m (proposed)</a>, <a class="pv" href="requirements.html#PV-04">0.5° (proposed)</a>, <a class="pv" href="requirements.html#PV-05">1.0 m (proposed)</a></td></tr>
+      <tr><td>Replay determinism</td><td><a class="ref" href="requirements.html#NFR-08">Deterministic MiL runs</a>, <a class="ref" href="requirements.html#NFR-11">Faithful replay timing</a>, <a class="ref" href="requirements.html#FR-19">Replay any run in MiL</a></td></tr>
+      <tr><td>Starting and stopping injection</td><td><a class="ref" href="requirements.html#SR-02">Start injection only when the stack is ready</a>, <a class="ref" href="requirements.html#SR-03">Stop injection on stack fault or override</a>, <a class="ref" href="requirements.html#SR-04">Stop injection on operator command</a></td></tr>
+      <tr><td>CSTI never affects the stack's safety chain</td><td><a class="ref" href="requirements.html#SR-06">CSTI cannot affect the stack's safety chain</a>, <a class="ref" href="requirements.html#SR-01">Real sensor data never altered</a></td></tr>
+      <tr><td>Stack fault response tested and recorded</td><td><a class="ref" href="requirements.html#FR-14">Network, GNSS and actuator faults</a>, <a class="ref" href="requirements.html#FR-17">Verdicts linked to recordings</a>, <a class="ref" href="requirements.html#SR-08">Record stack faults and state changes</a></td></tr>
+      <tr><td>No pop-in actors</td><td><a class="ref" href="requirements.html#SR-05">No pop-in actors</a></td></tr>
+      <tr><td>Shadow runs</td><td><a class="ref" href="requirements.html#FR-23">Shadow run profile</a>, <a class="ref" href="requirements.html#FR-18">Complete timestamped recording</a></td></tr>
+      <tr><td>Recording completeness</td><td><a class="ref" href="requirements.html#FR-18">Complete timestamped recording</a>, <a class="ref" href="requirements.html#FR-20">MCAP and CAN log recordings</a>, <a class="ref" href="requirements.html#NFR-10">Zero-drop recording</a>, <a class="ref" href="requirements.html#NFR-11">Faithful replay timing</a></td></tr>
+      <tr><td>Operator usability</td><td><a class="ref" href="requirements.html#FR-21">Live operator view (ViL)</a>, <a class="ref" href="requirements.html#NFR-12">Always-visible stop control</a>, <a class="ref" href="requirements.html#NFR-13">Status not shown by color alone</a>, <a class="ref" href="requirements.html#NFR-14">New-user onboarding time</a></td></tr>
+      <tr><td>Fault injection</td><td><a class="ref" href="requirements.html#FR-13">Sensor fault injection</a>, <a class="ref" href="requirements.html#FR-14">Network, GNSS and actuator faults</a>, <a class="ref" href="requirements.html#SR-13">Vehicle-test faults limited to virtual streams</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="tracking">10. How requirements are tracked</h2>
+  <p>Each requirement is tracked through the stages with MathWorks tools. Test cases in Simulink Test Manager run RoadRunner scenarios against the Simulink models, one test case or iteration per scenario and variant (<a href="https://www.mathworks.com/help/sltest/ug/create-and-run-a-roadrunner-test-case.html">RoadRunner test cases</a>). Requirements live in Requirements Toolbox, imported from the team's Excel sheet (<a href="https://www.mathworks.com/help/slrequirements/ug/import-requirements-from-microsoft-excel.html">Excel import</a>), and each one is linked to the test cases that verify it, so its pass or fail status updates after every run (<a href="https://www.mathworks.com/help/slrequirements/ug/link-requirement-test-items.html">linking tests</a>). Results from HIL and the vehicle, which run outside Simulink, can feed the same status as JUnit or Excel result files (<a href="https://www.mathworks.com/help/slrequirements/ug/include-results-from-external-sources-in-verification-status.html">external results</a>). As scenes are rebuilt from real map data collected on the car, the same test cases rerun on them, so every failure stays tied to a requirement, a scenario and a software version.</p>
+
+  <h2 id="open">11. Open issues</h2>
+  <ol>
+    <li><strong>Stack behavior when injection stops.</strong> Resolved by <a href="rationale.html#D-10">Stop injecting on a stack fault</a>: CSTI removes all virtual objects at once, and the stack's safety interlock sends default commands and alerts the driver.</li>
+    <li><strong>Where virtual and real data meet.</strong> Resolved by <a href="rationale.html#D-07">Injection on fusion's existing topics</a>: on fusion's existing topics, with a logging copy.</li>
+    <li><strong>Raw data in ViL.</strong> Resolved by <a href="rationale.html#D-04">Object-level injection in ViL</a>: object lists only.</li>
+    <li><strong>Unmeasured values.</strong> <a class="pv" href="requirements.html#PV-01">50 ms (proposed)</a>, <a class="pv" href="requirements.html#PV-02">1 ms (proposed)</a> and <a class="pv" href="requirements.html#PV-03">0.20 m (proposed)</a> depend on hardware not yet measured.</li>
+    <li><strong>Provisional inputs.</strong> Sensor mounting, actuation limits, override thresholds, and camera detection and LiDAR clustering locations.</li>
+  </ol>
+</main>
+<footer class="site-footer"><div class="inner">Project 1 · Software Design and Quality · Fall 2026 · Team of five (Members 1–5). Hardware and vehicle details are generic by design.</div></footer>
+</body>
+</html>
