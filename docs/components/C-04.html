@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backend Adapters — Cross-Stage Test Infrastructure</title>
+<link rel="stylesheet" href="../css/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <p class="site-title"><a href="../index.html">Cross-Stage Test Infrastructure (CSTI)</a></p>
+    <p class="site-subtitle">One scenario, every stage: MiL &rarr; PiL &rarr; HIL &rarr; Vehicle-in-the-Loop</p>
+    <nav class="site-nav" aria-label="Site"><ul><li><a href="../index.html">Overview</a></li><li><a href="../requirements.html">Requirements</a></li><li><a href="../design.html" aria-current="page">Design</a></li><li><a href="../integration.html">Fusion</a></li><li><a href="../traceability.html">Traceability</a></li><li><a href="../rationale.html">Rationale</a></li><li><a href="../evolution.html">Evolution</a></li><li><a href="../glossary.html">Glossary</a></li></ul></nav>
+  </div>
+</header>
+<main>
+<div class="page-head"><h1>Backend Adapters</h1></div>
+
+<p class="crumb"><a href="../design.html#components">Design</a> › Backend Adapters</p>
+<div class="table-wrap"><table class="kv"><tbody><tr><th scope="row">Responsibility</th><td>Connect each simulator to CSTI through one common plug-in interface.</td></tr><tr><th scope="row">Tool category</th><td>«tool» Simulink vehicle dynamics model; AURELION sensor simulation</td></tr><tr><th scope="row">Owner</th><td>Member 3</td></tr><tr><th scope="row">Group</th><td>Simulation runtime</td></tr><tr><th scope="row">Deployment</th><td>Desktop or in-vehicle test computer, by stage</td></tr><tr><th scope="row">Provides</th><td><a class="cref" href="../design.html#I-04">Backend adapter interface</a></td></tr><tr><th scope="row">Requires</th><td><a class="cref" href="../design.html#I-03">Run control</a>, <a class="cref" href="../design.html#I-05">Actor states</a>, <a class="cref" href="../design.html#I-08">Clock and sync health</a></td></tr></tbody></table></div>
+<h2>Description</h2><p>Simulators only render actors and model sensors; CSTI decides what the actors do. Only the adapters touch simulator-specific code, so a simulator can be added or replaced without changing anything else.</p>
+<h2>Sub-components</h2>
+<div class="table-wrap"><table class=""><thead><tr><th>Name</th><th>Role</th></tr></thead><tbody><tr><td><span id="C-04-1"></span>Desktop simulator (MiL)</td><td>Simulink controllers and vehicle dynamics model on a desktop, co-simulated with the RoadRunner scenario.</td></tr><tr><td><span id="C-04-4"></span>RoadRunner publisher (PiL)</td><td>For controls PiL: RoadRunner Scenario, co-simulating in Simulink, publishes ground truth (ego odometry, actor positions) to the ROS 2 network, where the code-generated controller nodes run.</td></tr><tr><td><span id="C-04-2"></span>Sensor simulator (perception MiL, PiL)</td><td>AURELION co-simulates the RoadRunner scenario on the desktop (VEOS), producing realistic sensor data and sensor faults. An AURELION Setup block in Simulink sends the ego and fellow-vehicle poses. In MiL the data stays on the desktop; in perception PiL it feeds RTMaps on the AUTERA.</td></tr><tr><td><span id="C-04-5"></span>Sensor cart (HIL)</td><td>Real sensors on a cart feed RTMaps and the stack on the AUTERA; CSTI adds only virtual objects and faults on its own streams.</td></tr><tr><td><span id="C-04-3"></span>Headless player (ViL)</td><td>Object-level data only, placed around the real vehicle's pose.</td></tr></tbody></table></div>
+<h2>Key behaviors</h2><ul><li>Each adapter declares what it supports, so unsupported scenarios are rejected up front.</li></ul>
+<h2>Stage variation</h2><p>Desktop simulator in controls MiL, sensor simulator in perception MiL and PiL, RoadRunner publisher in controls PiL, sensor cart in HIL, headless player in ViL.</p>
+<h2>Failure behavior</h2><p>A stalled adapter stops injection and fails the run.</p>
+<h2>Requirements satisfied (7)</h2>
+<ul class="reqlist"><li><a class="ref" href="../requirements.html#FR-02">Same scenario in every stage</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#FR-05">Three simulation backends</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#FR-06">Stage selection by configuration</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#FR-09">Two sensor fidelity levels (object level and raw)</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#FR-11">Plant-model ego (MiL, PiL, HIL)</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#NFR-01">New backend = new adapter only</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#NFR-03">Vendor dependencies only in adapters</a> <span class="mk-p">(primary)</span></li></ul>
+<h2>Related decisions</h2><ul><li><a class="ref" href="../rationale.html#D-02">Adapter pattern</a></li><li><a class="ref" href="../rationale.html#D-03">CSTI owns actor behavior</a></li></ul>
+<p class="crumb">← <a href="C-03.html">Test Orchestrator</a> · <a href="C-05.html">Actor Manager</a> →</p>
+</main>
+<footer class="site-footer"><div class="inner">Project 1 · Software Design and Quality · Fall 2026 · Team of five (Members 1–5). Hardware and vehicle details are generic by design.</div></footer>
+</body>
+</html>

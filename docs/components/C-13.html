@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recording & Replay — Cross-Stage Test Infrastructure</title>
+<link rel="stylesheet" href="../css/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <p class="site-title"><a href="../index.html">Cross-Stage Test Infrastructure (CSTI)</a></p>
+    <p class="site-subtitle">One scenario, every stage: MiL &rarr; PiL &rarr; HIL &rarr; Vehicle-in-the-Loop</p>
+    <nav class="site-nav" aria-label="Site"><ul><li><a href="../index.html">Overview</a></li><li><a href="../requirements.html">Requirements</a></li><li><a href="../design.html" aria-current="page">Design</a></li><li><a href="../integration.html">Fusion</a></li><li><a href="../traceability.html">Traceability</a></li><li><a href="../rationale.html">Rationale</a></li><li><a href="../evolution.html">Evolution</a></li><li><a href="../glossary.html">Glossary</a></li></ul></nav>
+  </div>
+</header>
+<main>
+<div class="page-head"><h1>Recording & Replay</h1></div>
+
+<p class="crumb"><a href="../design.html#components">Design</a> › Recording & Replay</p>
+<div class="table-wrap"><table class="kv"><tbody><tr><th scope="row">Responsibility</th><td>Record everything a run injected, received and decided, and replay any run on the desktop.</td></tr><tr><th scope="row">Tool category</th><td>«tool» Intrepid data logger on the vehicle, logs uploaded to the cloud; MCAP on the desktop</td></tr><tr><th scope="row">Owner</th><td>Member 2</td></tr><tr><th scope="row">Group</th><td>Evidence</td></tr><tr><th scope="row">Deployment</th><td>Desktop in MiL; on the bench and vehicle, a separate Intrepid data logger</td></tr><tr><th scope="row">Provides</th><td><a class="cref" href="../design.html#I-14">Recording</a></td></tr><tr><th scope="row">Requires</th><td><a class="cref" href="../design.html#I-05">Actor states</a>, <a class="cref" href="../design.html#I-07">Ego state</a>, <a class="cref" href="../design.html#I-10">Fault schedule</a>, <a class="cref" href="../design.html#I-11">Stack interface contract</a>, <a class="cref" href="../design.html#I-16">Operator commands</a>, <a class="cref" href="../design.html#I-19">Stack status</a>, <a class="cref" href="../design.html#I-20">Shadow would-have commands</a></td></tr></tbody></table></div>
+<h2>Description</h2><p>On the desktop, topics go into MCAP files. On the bench and vehicle, a separate Intrepid data logger records the run and the CAN bus and uploads the logs to the cloud, where CSTI pulls them later for replay and scoring. Real sensor data is recorded too, so a vehicle run can be replayed on the desktop. It also records every stack fault, state change, override and interlock default. A gap in the recording marks the run invalid.</p>
+<h2>Key behaviors</h2><ul><li>The data logger records on its own device, so a network failure cannot lose evidence.</li></ul>
+<h2>Stage variation</h2><p>Same in every stage; CAN logs in HIL and ViL.</p>
+<h2>Failure behavior</h2><p>If recording fails, injection stops, since an unrecorded run cannot serve as evidence.</p>
+<h2>Requirements satisfied (9)</h2>
+<ul class="reqlist"><li><a class="ref" href="../requirements.html#FR-17">Verdicts linked to recordings</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#FR-18">Complete timestamped recording</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#FR-19">Replay any run in MiL</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#FR-20">MCAP and CAN log recordings</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#FR-23">Shadow run profile</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#NFR-10">Zero-drop recording</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#NFR-11">Faithful replay timing</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#SR-03">Stop injection on stack fault or override</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#SR-08">Record stack faults and state changes</a> <span class="mk-p">(primary)</span></li></ul>
+<h2>Related decisions</h2><ul><li><a class="ref" href="../rationale.html#D-11">Record everything</a></li></ul>
+<p class="crumb">← <a href="C-11.html">Stack Interface Gateway</a> · <a href="C-14.html">Run Evaluator</a> →</p>
+</main>
+<footer class="site-footer"><div class="inner">Project 1 · Software Design and Quality · Fall 2026 · Team of five (Members 1–5). Hardware and vehicle details are generic by design.</div></footer>
+</body>
+</html>

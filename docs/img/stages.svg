@@ -1,0 +1,67 @@
+<svg class="dg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" role="img" aria-labelledby="stg-t stg-d"><title id="stg-t">Stages by track</title><desc id="stg-d">Controls and perception each run MiL and PiL separately, then run together on the full stack in HIL on the sensor cart and in ViL on the car.</desc><style>
+svg{--text:#1d2125;--muted:#5b636b;--line:#d9dcdf;--surface:#fff;--bg:#fbfbf9;--code-bg:#f1f2f3;
+--accent:#8a1c2b;--accent-soft:#f6e9eb;--accent2:#c25e00;--proposed-bg:#fdeedc;--safety:#8a1c2b;--safety-bg:#fbe9ec;color:#1d2125;background:#fff}
+@media (prefers-color-scheme: dark){svg{--text:#e6e8ea;--muted:#a3abb3;--line:#353a40;--surface:#1d2024;--bg:#15171a;
+--code-bg:#262a2f;--accent:#e0848f;--accent-soft:#2d1f22;--accent2:#f0a35c;--proposed-bg:#33261a;--safety:#f09aa4;--safety-bg:#33201f;color:#e6e8ea;background:#1d2024}}
+.dg text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:12px;fill:var(--text)}
+.dg .box{fill:var(--surface);stroke:var(--text);stroke-width:1.2}
+.dg .sub{fill:var(--bg);stroke:var(--muted);stroke-width:1}
+.dg .ext{fill:var(--code-bg);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+.dg .sys{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+.dg .safe{fill:var(--safety-bg);stroke:var(--safety);stroke-width:1.6}
+.dg .frozen{fill:var(--proposed-bg);stroke:var(--accent2);stroke-width:2.4}
+.dg .lane{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
+.dg .lanet{font-size:11px;fill:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.dg .ln{stroke:var(--text);fill:none;stroke-width:1.2}
+.dg .ln.dash{stroke-dasharray:5 4}.dg .ln.red{stroke:var(--safety)}.dg .ln.thin{stroke:var(--muted)}
+.dg .lbl{font-size:11px;fill:var(--muted)}.dg .lbl-bg{fill:var(--surface)}
+.dg .st{font-size:10.5px;fill:var(--muted);font-style:italic}.dg .id{font-weight:700}
+.dg .act{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1}
+.dg .frag{fill:none;stroke:var(--muted);stroke-width:1}.dg .fragt{fill:var(--code-bg);stroke:var(--muted);stroke-width:1}
+.dg .state{fill:var(--surface);stroke:var(--text);stroke-width:1.3}.dg .dot{fill:var(--text)}
+</style><defs><marker id="stg-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker><marker id="stg-arrs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="currentColor"/></marker><marker id="stg-open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="currentColor" stroke-width="1.4"/></marker><marker id="stg-opens" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10,0 L0,5 L10,10" fill="none" stroke="currentColor" stroke-width="1.4"/></marker></defs><text class="id" x="240" y="30" text-anchor="middle">MiL</text>
+<text class="id" x="450" y="30" text-anchor="middle">PiL</text>
+<text class="id" x="660" y="30" text-anchor="middle">HIL</text>
+<text class="id" x="870" y="30" text-anchor="middle">ViL</text>
+<text class="id" x="70" y="108" text-anchor="middle">Controls</text>
+<text class="id" x="70" y="228" text-anchor="middle">Perception</text>
+<rect class="box" x="140" y="50" width="200" height="110" rx="4"/>
+<text x="240.0" y="89.0" text-anchor="middle">Simulink controllers</text>
+<text class="st" x="240.0" y="104.0" text-anchor="middle">vs RoadRunner Scenario;</text>
+<text class="st" x="240.0" y="117.0" text-anchor="middle">objects straight from</text>
+<text class="st" x="240.0" y="130.0" text-anchor="middle">RoadRunner, unprocessed</text>
+<rect class="box" x="350" y="50" width="200" height="110" rx="4"/>
+<text x="450.0" y="89.0" text-anchor="middle">C++ controller nodes</text>
+<text class="st" x="450.0" y="104.0" text-anchor="middle">code-generated from Simulink,</text>
+<text class="st" x="450.0" y="117.0" text-anchor="middle">on the AUTERA; RoadRunner</text>
+<text class="st" x="450.0" y="130.0" text-anchor="middle">ground truth over ROS 2</text>
+<rect class="box" x="140" y="175" width="200" height="110" rx="4"/>
+<text x="240.0" y="214.0" text-anchor="middle">Sensor placement</text>
+<text class="st" x="240.0" y="229.0" text-anchor="middle">checked in RoadRunner;</text>
+<text class="st" x="240.0" y="242.0" text-anchor="middle">AURELION adds realistic</text>
+<text class="st" x="240.0" y="255.0" text-anchor="middle">data and sensor faults</text>
+<rect class="box" x="350" y="175" width="200" height="110" rx="4"/>
+<text x="450.0" y="214.0" text-anchor="middle">RTMaps + fusion</text>
+<text class="st" x="450.0" y="229.0" text-anchor="middle">on the AUTERA, fed</text>
+<text class="st" x="450.0" y="242.0" text-anchor="middle">AURELION sensor data</text>
+<text class="st" x="450.0" y="255.0" text-anchor="middle">from the desktop</text>
+<rect class="sys" x="560" y="50" width="200" height="235" rx="4"/>
+<text x="660.0" y="138.5" text-anchor="middle">Sensor cart</text>
+<text class="st" x="660.0" y="153.5" text-anchor="middle">real sensors → RTMaps →</text>
+<text class="st" x="660.0" y="166.5" text-anchor="middle">full stack on the AUTERA;</text>
+<text class="st" x="660.0" y="179.5" text-anchor="middle">Simulink vehicle model on</text>
+<text class="st" x="660.0" y="192.5" text-anchor="middle">the bench over Ethernet;</text>
+<text class="st" x="660.0" y="205.5" text-anchor="middle">interlock active</text>
+<rect class="sys" x="770" y="50" width="200" height="235" rx="4"/>
+<text x="870.0" y="145.0" text-anchor="middle">Full stack on the car</text>
+<text class="st" x="870.0" y="160.0" text-anchor="middle">real sensors plus CSTI&#x27;s</text>
+<text class="st" x="870.0" y="173.0" text-anchor="middle">virtual object lists;</text>
+<text class="st" x="870.0" y="186.0" text-anchor="middle">safety driver;</text>
+<text class="st" x="870.0" y="199.0" text-anchor="middle">interlock active</text>
+<path class="ln" d="M340,105 L350,105" marker-end="url(#stg-arr)"/>
+<path class="ln" d="M340,230 L350,230" marker-end="url(#stg-arr)"/>
+<path class="ln" d="M550,105 L560,105" marker-end="url(#stg-arr)"/>
+<path class="ln" d="M550,230 L560,230" marker-end="url(#stg-arr)"/>
+<path class="ln" d="M760,105 L770,105" marker-end="url(#stg-arr)"/>
+<path class="ln" d="M760,230 L770,230" marker-end="url(#stg-arr)"/>
+<text class="st" x="500" y="315" text-anchor="middle">The tracks join in HIL on the sensor cart.</text></svg>

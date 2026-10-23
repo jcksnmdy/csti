@@ -1,0 +1,55 @@
+<svg class="dg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" role="img" aria-labelledby="dpa-t dpa-d"><title id="dpa-t">In the data path versus publishing on the same topic</title><desc id="dpa-d">Left: CSTI merges real and virtual data, so real data passes through CSTI. Right: the real publisher is untouched; CSTI publishes virtual object lists on the same fusion input topic (remapped) and mirrors them on /virtual/.</desc><style>
+svg{--text:#1d2125;--muted:#5b636b;--line:#d9dcdf;--surface:#fff;--bg:#fbfbf9;--code-bg:#f1f2f3;
+--accent:#8a1c2b;--accent-soft:#f6e9eb;--accent2:#c25e00;--proposed-bg:#fdeedc;--safety:#8a1c2b;--safety-bg:#fbe9ec;color:#1d2125;background:#fff}
+@media (prefers-color-scheme: dark){svg{--text:#e6e8ea;--muted:#a3abb3;--line:#353a40;--surface:#1d2024;--bg:#15171a;
+--code-bg:#262a2f;--accent:#e0848f;--accent-soft:#2d1f22;--accent2:#f0a35c;--proposed-bg:#33261a;--safety:#f09aa4;--safety-bg:#33201f;color:#e6e8ea;background:#1d2024}}
+.dg text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:12px;fill:var(--text)}
+.dg .box{fill:var(--surface);stroke:var(--text);stroke-width:1.2}
+.dg .sub{fill:var(--bg);stroke:var(--muted);stroke-width:1}
+.dg .ext{fill:var(--code-bg);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+.dg .sys{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+.dg .safe{fill:var(--safety-bg);stroke:var(--safety);stroke-width:1.6}
+.dg .frozen{fill:var(--proposed-bg);stroke:var(--accent2);stroke-width:2.4}
+.dg .lane{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
+.dg .lanet{font-size:11px;fill:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.dg .ln{stroke:var(--text);fill:none;stroke-width:1.2}
+.dg .ln.dash{stroke-dasharray:5 4}.dg .ln.red{stroke:var(--safety)}.dg .ln.thin{stroke:var(--muted)}
+.dg .lbl{font-size:11px;fill:var(--muted)}.dg .lbl-bg{fill:var(--surface)}
+.dg .st{font-size:10.5px;fill:var(--muted);font-style:italic}.dg .id{font-weight:700}
+.dg .act{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1}
+.dg .frag{fill:none;stroke:var(--muted);stroke-width:1}.dg .fragt{fill:var(--code-bg);stroke:var(--muted);stroke-width:1}
+.dg .state{fill:var(--surface);stroke:var(--text);stroke-width:1.3}.dg .dot{fill:var(--text)}
+</style><defs><marker id="dpa-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker><marker id="dpa-arrs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="currentColor"/></marker><marker id="dpa-open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="currentColor" stroke-width="1.4"/></marker><marker id="dpa-opens" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10,0 L0,5 L10,10" fill="none" stroke="currentColor" stroke-width="1.4"/></marker></defs><rect class="lane" x="10" y="10" width="480" height="280" rx="6"/>
+<text class="lanet" x="22" y="30" text-anchor="start">CSTI in the data path (rejected)</text>
+<rect class="lane" x="510" y="10" width="480" height="280" rx="6"/>
+<text class="lanet" x="522" y="30" text-anchor="start">Same topic, separate publisher (chosen)</text>
+<rect class="box" x="30" y="90" width="120" height="50" rx="4"/>
+<text x="90.0" y="118.5" text-anchor="middle">Real sensor</text>
+<rect class="safe" x="200" y="90" width="140" height="50" rx="4"/>
+<text x="270.0" y="118.5" text-anchor="middle">CSTI merge node</text>
+<rect class="box" x="390" y="90" width="90" height="50" rx="4"/>
+<text x="435.0" y="118.5" text-anchor="middle">Fusion</text>
+<rect class="sub" x="200" y="180" width="140" height="40" rx="4"/>
+<text x="270.0" y="203.5" text-anchor="middle">virtual objects</text>
+<path class="ln" d="M150,115 L200,115" marker-end="url(#dpa-arr)"/>
+<path class="ln" d="M340,115 L390,115" marker-end="url(#dpa-arr)"/>
+<path class="ln" d="M270,180 L270,140" marker-end="url(#dpa-arr)"/>
+<text class="st" x="250" y="268" text-anchor="middle">If CSTI stalls or crashes, real data stops too.</text>
+<rect class="box" x="525" y="90" width="110" height="50" rx="4"/>
+<text x="580.0" y="118.5" text-anchor="middle">Real sensor</text>
+<rect class="sub" x="670" y="90" width="150" height="50" rx="4"/>
+<text x="745.0" y="118.5" text-anchor="middle">fusion input topic</text>
+<rect class="box" x="870" y="90" width="100" height="50" rx="4"/>
+<text x="920.0" y="118.5" text-anchor="middle">Fusion</text>
+<rect class="frozen" x="670" y="185" width="150" height="46" rx="4"/>
+<text x="745.0" y="211.5" text-anchor="middle">CSTI gateway</text>
+<rect class="sub" x="855" y="185" width="120" height="46" rx="4"/>
+<text x="915.0" y="205.0" text-anchor="middle">/virtual/ mirror</text>
+<text class="st" x="915.0" y="220.0" text-anchor="middle">logs only</text>
+<path class="ln" d="M635,115 L670,115" marker-end="url(#dpa-arr)"/>
+<path class="ln" d="M820,115 L870,115" marker-end="url(#dpa-arr)"/>
+<path class="ln dash" d="M745,185 L745,140" marker-end="url(#dpa-arr)"/>
+<rect class="lbl-bg" x="661.2" y="156" width="167.5" height="13"/>
+<text class="lbl" x="745" y="166" text-anchor="middle">remapped, source id = virtual</text>
+<path class="ln dash" d="M820,208 L855,208" marker-end="url(#dpa-arr)"/>
+<text class="st" x="750" y="260" text-anchor="middle">Real publisher untouched. If CSTI fails, only virtual objects stop.</text></svg>

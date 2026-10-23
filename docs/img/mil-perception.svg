@@ -1,0 +1,53 @@
+<svg class="dg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 330" role="img" aria-labelledby="milp-t milp-d"><title id="milp-t">Perception MiL</title><desc id="milp-d">On one desktop, drive data rebuilds the test site in RoadRunner and sensor placement and specs are checked; AURELION co-simulates the scenario on VEOS to produce realistic sensor data and add sensor faults.</desc><style>
+svg{--text:#1d2125;--muted:#5b636b;--line:#d9dcdf;--surface:#fff;--bg:#fbfbf9;--code-bg:#f1f2f3;
+--accent:#8a1c2b;--accent-soft:#f6e9eb;--accent2:#c25e00;--proposed-bg:#fdeedc;--safety:#8a1c2b;--safety-bg:#fbe9ec;color:#1d2125;background:#fff}
+@media (prefers-color-scheme: dark){svg{--text:#e6e8ea;--muted:#a3abb3;--line:#353a40;--surface:#1d2024;--bg:#15171a;
+--code-bg:#262a2f;--accent:#e0848f;--accent-soft:#2d1f22;--accent2:#f0a35c;--proposed-bg:#33261a;--safety:#f09aa4;--safety-bg:#33201f;color:#e6e8ea;background:#1d2024}}
+.dg text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:12px;fill:var(--text)}
+.dg .box{fill:var(--surface);stroke:var(--text);stroke-width:1.2}
+.dg .sub{fill:var(--bg);stroke:var(--muted);stroke-width:1}
+.dg .ext{fill:var(--code-bg);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+.dg .sys{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+.dg .safe{fill:var(--safety-bg);stroke:var(--safety);stroke-width:1.6}
+.dg .frozen{fill:var(--proposed-bg);stroke:var(--accent2);stroke-width:2.4}
+.dg .lane{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
+.dg .lanet{font-size:11px;fill:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.dg .ln{stroke:var(--text);fill:none;stroke-width:1.2}
+.dg .ln.dash{stroke-dasharray:5 4}.dg .ln.red{stroke:var(--safety)}.dg .ln.thin{stroke:var(--muted)}
+.dg .lbl{font-size:11px;fill:var(--muted)}.dg .lbl-bg{fill:var(--surface)}
+.dg .st{font-size:10.5px;fill:var(--muted);font-style:italic}.dg .id{font-weight:700}
+.dg .act{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1}
+.dg .frag{fill:none;stroke:var(--muted);stroke-width:1}.dg .fragt{fill:var(--code-bg);stroke:var(--muted);stroke-width:1}
+.dg .state{fill:var(--surface);stroke:var(--text);stroke-width:1.3}.dg .dot{fill:var(--text)}
+</style><defs><marker id="milp-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker><marker id="milp-arrs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="currentColor"/></marker><marker id="milp-open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="currentColor" stroke-width="1.4"/></marker><marker id="milp-opens" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10,0 L0,5 L10,10" fill="none" stroke="currentColor" stroke-width="1.4"/></marker></defs><path class="box" d="M20,50 L32,38 L992,38 L980,50 Z"/>
+<path class="box" d="M980,50 L992,38 L992,298 L980,310 Z"/>
+<rect class="box" x="20" y="50" width="960" height="260" rx="0"/>
+<text class="st" x="500.0" y="68" text-anchor="middle">«device»</text>
+<text class="id" x="500.0" y="84" text-anchor="middle">Desktop workstation (VEOS)</text>
+<rect class="ext" x="50" y="95" width="200" height="80" rx="4"/>
+<text x="150.0" y="125.5" text-anchor="middle">Drive data</text>
+<text class="st" x="150.0" y="140.5" text-anchor="middle">camera, LiDAR, GPS</text>
+<text class="st" x="150.0" y="153.5" text-anchor="middle">from the car</text>
+<rect class="box" x="290" y="95" width="200" height="80" rx="4"/>
+<text x="390.0" y="125.5" text-anchor="middle">RoadRunner scene</text>
+<text class="st" x="390.0" y="140.5" text-anchor="middle">test site rebuilt</text>
+<text class="st" x="390.0" y="153.5" text-anchor="middle">from drive data</text>
+<rect class="box" x="530" y="95" width="200" height="80" rx="4"/>
+<text x="630.0" y="132.0" text-anchor="middle">Sensors placed</text>
+<text class="st" x="630.0" y="147.0" text-anchor="middle">on the vehicle model</text>
+<rect class="box" x="770" y="95" width="180" height="80" rx="4"/>
+<text x="860.0" y="124.5" text-anchor="middle">Placement and</text>
+<text x="860.0" y="139.5" text-anchor="middle">spec check</text>
+<text class="st" x="860.0" y="154.5" text-anchor="middle">fields of view, range</text>
+<path class="ln" d="M250,135 L290,135" marker-end="url(#milp-arr)"/>
+<path class="ln" d="M490,135 L530,135" marker-end="url(#milp-arr)"/>
+<path class="ln" d="M730,135 L770,135" marker-end="url(#milp-arr)"/>
+<rect class="box" x="290" y="205" width="200" height="70" rx="4"/>
+<text x="390.0" y="237.0" text-anchor="middle">AURELION</text>
+<text class="st" x="390.0" y="252.0" text-anchor="middle">co-simulates the scenario</text>
+<rect class="box" x="530" y="205" width="200" height="70" rx="4"/>
+<text x="630.0" y="237.0" text-anchor="middle">Realistic sensor data</text>
+<text class="st" x="630.0" y="252.0" text-anchor="middle">with injected sensor faults</text>
+<path class="ln" d="M390,175 L390,205" marker-end="url(#milp-arr)"/>
+<path class="ln" d="M490,240 L530,240" marker-end="url(#milp-arr)"/>
+<text class="st" x="500" y="296" text-anchor="middle">Still MiL: no fusion on the car&#x27;s stack and no safety interlock.</text></svg>

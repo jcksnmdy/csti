@@ -1,0 +1,91 @@
+<svg class="dg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 600" role="img" aria-labelledby="stm-t stm-d"><title id="stm-t">Run lifecycle state machine</title><desc id="stm-d">Idle, Configuring, Ready, Armed, Running, Stopping, Stopped, Completed, Evaluating. Arming waits for the stack to report no fault; a stack fault or override, an operator stop or a CSTI failure stops injection.</desc><style>
+svg{--text:#1d2125;--muted:#5b636b;--line:#d9dcdf;--surface:#fff;--bg:#fbfbf9;--code-bg:#f1f2f3;
+--accent:#8a1c2b;--accent-soft:#f6e9eb;--accent2:#c25e00;--proposed-bg:#fdeedc;--safety:#8a1c2b;--safety-bg:#fbe9ec;color:#1d2125;background:#fff}
+@media (prefers-color-scheme: dark){svg{--text:#e6e8ea;--muted:#a3abb3;--line:#353a40;--surface:#1d2024;--bg:#15171a;
+--code-bg:#262a2f;--accent:#e0848f;--accent-soft:#2d1f22;--accent2:#f0a35c;--proposed-bg:#33261a;--safety:#f09aa4;--safety-bg:#33201f;color:#e6e8ea;background:#1d2024}}
+.dg text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:12px;fill:var(--text)}
+.dg .box{fill:var(--surface);stroke:var(--text);stroke-width:1.2}
+.dg .sub{fill:var(--bg);stroke:var(--muted);stroke-width:1}
+.dg .ext{fill:var(--code-bg);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+.dg .sys{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+.dg .safe{fill:var(--safety-bg);stroke:var(--safety);stroke-width:1.6}
+.dg .frozen{fill:var(--proposed-bg);stroke:var(--accent2);stroke-width:2.4}
+.dg .lane{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
+.dg .lanet{font-size:11px;fill:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.dg .ln{stroke:var(--text);fill:none;stroke-width:1.2}
+.dg .ln.dash{stroke-dasharray:5 4}.dg .ln.red{stroke:var(--safety)}.dg .ln.thin{stroke:var(--muted)}
+.dg .lbl{font-size:11px;fill:var(--muted)}.dg .lbl-bg{fill:var(--surface)}
+.dg .st{font-size:10.5px;fill:var(--muted);font-style:italic}.dg .id{font-weight:700}
+.dg .act{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1}
+.dg .frag{fill:none;stroke:var(--muted);stroke-width:1}.dg .fragt{fill:var(--code-bg);stroke:var(--muted);stroke-width:1}
+.dg .state{fill:var(--surface);stroke:var(--text);stroke-width:1.3}.dg .dot{fill:var(--text)}
+</style><defs><marker id="stm-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker><marker id="stm-arrs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="currentColor"/></marker><marker id="stm-open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10" fill="none" stroke="currentColor" stroke-width="1.4"/></marker><marker id="stm-opens" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M10,0 L0,5 L10,10" fill="none" stroke="currentColor" stroke-width="1.4"/></marker></defs><circle class="dot" cx="42" cy="72" r="7"/>
+<path class="ln" d="M49,72 L70,72" marker-end="url(#stm-arr)"/>
+<rect class="state" x="70" y="50" width="110" height="44" rx="12"/>
+<text x="125.0" y="76.0" text-anchor="middle">Idle</text>
+<rect class="state" x="290" y="50" width="150" height="44" rx="12"/>
+<text x="365.0" y="69.0" text-anchor="middle">Configuring</text>
+<text x="365.0" y="83.0" text-anchor="middle">(load + validate)</text>
+<rect class="state" x="560" y="50" width="110" height="44" rx="12"/>
+<text x="615.0" y="76.0" text-anchor="middle">Ready</text>
+<rect class="state" x="790" y="50" width="110" height="44" rx="12"/>
+<text x="845.0" y="76.0" text-anchor="middle">Armed</text>
+<path class="ln" d="M180,66 L290,66" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="165.0" y="49" width="140.0" height="13"/>
+<text class="lbl" x="235" y="59" text-anchor="middle">start(profile, scenario)</text>
+<path class="ln" d="M290,86 L180,86" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="181.5" y="94" width="107.0" height="13"/>
+<text class="lbl" x="235" y="104" text-anchor="middle">[invalid] / report</text>
+<path class="ln" d="M440,66 L560,66" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="476.8" y="49" width="46.5" height="13"/>
+<text class="lbl" x="500" y="59" text-anchor="middle">[valid]</text>
+<path class="ln" d="M670,66 L790,66" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="679.2" y="49" width="101.5" height="13"/>
+<text class="lbl" x="730" y="59" text-anchor="middle">arm [checks pass]</text>
+<path class="ln" d="M790,86 L670,86" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="704.0" y="94" width="52.0" height="13"/>
+<text class="lbl" x="730" y="104" text-anchor="middle">disarm /</text>
+<rect class="lbl-bg" x="698.5" y="107" width="63.0" height="13"/>
+<text class="lbl" x="730" y="117" text-anchor="middle">check lost</text>
+<rect class="sub" x="830" y="125" width="200" height="105" rx="6"/>
+<text class="id" x="840" y="143" text-anchor="start">Arming checks (HIL, ViL)</text>
+<text class="st" x="840" y="162" text-anchor="start">stack reports no fault</text>
+<text class="st" x="840" y="178" text-anchor="start">scenario validated</text>
+<text class="st" x="840" y="194" text-anchor="start">operator confirms driver ready</text>
+<text class="st" x="840" y="210" text-anchor="start">MiL, PiL: arm is automatic</text>
+<rect class="state" x="300" y="160" width="440" height="120" rx="12"/>
+<text x="520.0" y="217.0" text-anchor="middle">Running</text>
+<text x="520.0" y="231.0" text-anchor="middle">(injecting)</text>
+<text class="st" x="520" y="250" text-anchor="middle">The stack&#x27;s own fault detection and safety interlock</text>
+<text class="st" x="520" y="264" text-anchor="middle">act on their own; CSTI only stops injecting.</text>
+<path class="ln" d="M805,94 L805,200 L740,200" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="787.2" y="102" width="35.5" height="13"/>
+<text class="lbl" x="805" y="112" text-anchor="middle">start</text>
+<rect class="safe" x="300" y="380" width="170" height="54" rx="12"/>
+<text x="385.0" y="404.0" text-anchor="middle">Stopping</text>
+<text x="385.0" y="418.0" text-anchor="middle">(injection off, logged)</text>
+<rect class="state" x="600" y="380" width="150" height="54" rx="12"/>
+<text x="675.0" y="411.0" text-anchor="middle">Completed</text>
+<rect class="state" x="300" y="490" width="170" height="44" rx="12"/>
+<text x="385.0" y="516.0" text-anchor="middle">Stopped</text>
+<rect class="state" x="830" y="440" width="150" height="50" rx="12"/>
+<text x="905.0" y="469.0" text-anchor="middle">Evaluating</text>
+<path class="ln red" d="M340,280 L340,380" marker-end="url(#stm-arr)"/>
+<text class="lbl" x="330" y="312" text-anchor="end">stack fault or override,</text>
+<text class="lbl" x="330" y="325" text-anchor="end">operator stop,</text>
+<text class="lbl" x="330" y="338" text-anchor="end">CSTI component failure</text>
+<path class="ln" d="M675,280 L675,380" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="679.0" y="320" width="74.0" height="13"/>
+<text class="lbl" x="683" y="330" text-anchor="start">scenario end</text>
+<path class="ln" d="M385,434 L385,490" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="389.0" y="456" width="96.0" height="13"/>
+<text class="lbl" x="393" y="466" text-anchor="start">recording closed</text>
+<path class="ln" d="M750,407 L890,407 L890,440" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="794.0" y="401" width="52.0" height="13"/>
+<text class="lbl" x="820" y="411" text-anchor="middle">evaluate</text>
+<path class="ln" d="M385,534 L385,565 L940,565 L940,490" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="563.5" y="559" width="173.0" height="13"/>
+<text class="lbl" x="650" y="569" text-anchor="middle">verdict = stopped (never pass)</text>
+<path class="ln" d="M980,465 L1045,465 L1045,22 L125,22 L125,50" marker-end="url(#stm-arr)"/>
+<rect class="lbl-bg" x="481.8" y="16" width="156.5" height="13"/>
+<text class="lbl" x="560" y="26" text-anchor="middle">next run in campaign / done</text></svg>

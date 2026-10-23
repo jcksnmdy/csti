@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run Evaluator — Cross-Stage Test Infrastructure</title>
+<link rel="stylesheet" href="../css/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <p class="site-title"><a href="../index.html">Cross-Stage Test Infrastructure (CSTI)</a></p>
+    <p class="site-subtitle">One scenario, every stage: MiL &rarr; PiL &rarr; HIL &rarr; Vehicle-in-the-Loop</p>
+    <nav class="site-nav" aria-label="Site"><ul><li><a href="../index.html">Overview</a></li><li><a href="../requirements.html">Requirements</a></li><li><a href="../design.html" aria-current="page">Design</a></li><li><a href="../integration.html">Fusion</a></li><li><a href="../traceability.html">Traceability</a></li><li><a href="../rationale.html">Rationale</a></li><li><a href="../evolution.html">Evolution</a></li><li><a href="../glossary.html">Glossary</a></li></ul></nav>
+  </div>
+</header>
+<main>
+<div class="page-head"><h1>Run Evaluator</h1></div>
+
+<p class="crumb"><a href="../design.html#components">Design</a> › Run Evaluator</p>
+<div class="table-wrap"><table class="kv"><tbody><tr><th scope="row">Responsibility</th><td>Turn each recording into a pass or fail verdict and roll verdicts into reports.</td></tr><tr><th scope="row">Tool category</th><td>«tool» CI test runner and scenario scoring</td></tr><tr><th scope="row">Owner</th><td>Member 1</td></tr><tr><th scope="row">Group</th><td>Authoring & control</td></tr><tr><th scope="row">Deployment</th><td>Desktop and CI server</td></tr><tr><th scope="row">Provides</th><td><a class="cref" href="../design.html#I-15">Verdicts and reports</a></td></tr><tr><th scope="row">Requires</th><td><a class="cref" href="../design.html#I-01">Parsed scenario</a>, <a class="cref" href="../design.html#I-14">Recording</a></td></tr></tbody></table></div>
+<h2>Description</h2><p>Unit, integration and base-scenario tests run on every change. Scenario runs are scored on gap, time-gap error, minimum time-to-collision, jerk and lateral offset. When a scenario injects a fault, it also checks the stack's response: fault raised, defaults sent, driver alerted.</p>
+<h2>Key behaviors</h2><ul><li>Scores from the recording, so a live run and its replay get the same verdict.</li><li>Stopped or invalid runs never pass.</li></ul>
+<h2>Stage variation</h2><p>Same in every stage; vehicle runs are scored on virtual actors only.</p>
+<h2>Failure behavior</h2><p>A run that cannot be scored is flagged, never passed.</p>
+<h2>Requirements satisfied (3)</h2>
+<ul class="reqlist"><li><a class="ref" href="../requirements.html#FR-16">Unattended campaigns</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#FR-17">Verdicts linked to recordings</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#SR-08">Record stack faults and state changes</a> <span class="mk-s">(supporting)</span></li></ul>
+<h2>Related decisions</h2><ul><li><a class="ref" href="../rationale.html#D-11">Record everything</a></li></ul>
+<p class="crumb">← <a href="C-13.html">Recording & Replay</a> · <a href="C-15.html">Monitoring & Operator View</a> →</p>
+</main>
+<footer class="site-footer"><div class="inner">Project 1 · Software Design and Quality · Fall 2026 · Team of five (Members 1–5). Hardware and vehicle details are generic by design.</div></footer>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fault Injector — Cross-Stage Test Infrastructure</title>
+<link rel="stylesheet" href="../css/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <p class="site-title"><a href="../index.html">Cross-Stage Test Infrastructure (CSTI)</a></p>
+    <p class="site-subtitle">One scenario, every stage: MiL &rarr; PiL &rarr; HIL &rarr; Vehicle-in-the-Loop</p>
+    <nav class="site-nav" aria-label="Site"><ul><li><a href="../index.html">Overview</a></li><li><a href="../requirements.html">Requirements</a></li><li><a href="../design.html" aria-current="page">Design</a></li><li><a href="../integration.html">Fusion</a></li><li><a href="../traceability.html">Traceability</a></li><li><a href="../rationale.html">Rationale</a></li><li><a href="../evolution.html">Evolution</a></li><li><a href="../glossary.html">Glossary</a></li></ul></nav>
+  </div>
+</header>
+<main>
+<div class="page-head"><h1>Fault Injector</h1></div>
+
+<p class="crumb"><a href="../design.html#components">Design</a> › Fault Injector</p>
+<div class="table-wrap"><table class="kv"><tbody><tr><th scope="row">Responsibility</th><td>Add scheduled faults to test how the stack copes with bad data.</td></tr><tr><th scope="row">Tool category</th><td>«tool» Fault injection tool</td></tr><tr><th scope="row">Owner</th><td>Member 4</td></tr><tr><th scope="row">Group</th><td>Simulation runtime</td></tr><tr><th scope="row">Deployment</th><td>Desktop in MiL; on the bench and vehicle, a separate Intrepid data logger</td></tr><tr><th scope="row">Provides</th><td>—</td></tr><tr><th scope="row">Requires</th><td><a class="cref" href="../design.html#I-09">Synthetic sensor frames</a>, <a class="cref" href="../design.html#I-10">Fault schedule</a></td></tr></tbody></table></div>
+<h2>Description</h2><p>Faults include added latency, noise, dropouts, ghost targets and frame drops on sensor streams, and, off the vehicle only, network faults, GNSS outages and actuator faults. In MiL it adds AURELION sensor faults; in HIL it also drops heartbeats and sensor streams to check that the stack's fault detection node and safety interlock respond correctly. Every fault is recorded with its timing.</p>
+<h2>Key behaviors</h2><ul><li>Seeded, so faulted desktop runs repeat exactly.</li></ul>
+<h2>Stage variation</h2><p>All faults in MiL, PiL and HIL; on the vehicle, only faults on CSTI's own virtual data.</p>
+<h2>Failure behavior</h2><p>If it fails, the stream stops and the run is treated as missing data.</p>
+<h2>Requirements satisfied (6)</h2>
+<ul class="reqlist"><li><a class="ref" href="../requirements.html#FR-13">Sensor fault injection</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#FR-14">Network, GNSS and actuator faults</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#NFR-04">Portable across nodes</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#NFR-08">Deterministic MiL runs</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#SR-06">CSTI cannot affect the stack's safety chain</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#SR-13">Vehicle-test faults limited to virtual streams</a> <span class="mk-s">(supporting)</span></li></ul>
+<h2>Related decisions</h2><ul><li><a class="ref" href="../rationale.html#D-13">Validate before the run</a></li></ul>
+<p class="crumb">← <a href="C-07.html">Sensor Abstraction Layer</a> · <a href="C-09.html">Ego-State Bridge</a> →</p>
+</main>
+<footer class="site-footer"><div class="inner">Project 1 · Software Design and Quality · Fall 2026 · Team of five (Members 1–5). Hardware and vehicle details are generic by design.</div></footer>
+</body>
+</html>

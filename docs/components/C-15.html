@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitoring & Operator View — Cross-Stage Test Infrastructure</title>
+<link rel="stylesheet" href="../css/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <p class="site-title"><a href="../index.html">Cross-Stage Test Infrastructure (CSTI)</a></p>
+    <p class="site-subtitle">One scenario, every stage: MiL &rarr; PiL &rarr; HIL &rarr; Vehicle-in-the-Loop</p>
+    <nav class="site-nav" aria-label="Site"><ul><li><a href="../index.html">Overview</a></li><li><a href="../requirements.html">Requirements</a></li><li><a href="../design.html" aria-current="page">Design</a></li><li><a href="../integration.html">Fusion</a></li><li><a href="../traceability.html">Traceability</a></li><li><a href="../rationale.html">Rationale</a></li><li><a href="../evolution.html">Evolution</a></li><li><a href="../glossary.html">Glossary</a></li></ul></nav>
+  </div>
+</header>
+<main>
+<div class="page-head"><h1>Monitoring & Operator View</h1></div>
+
+<p class="crumb"><a href="../design.html#components">Design</a> › Monitoring & Operator View</p>
+<div class="table-wrap"><table class="kv"><tbody><tr><th scope="row">Responsibility</th><td>Show people what the test is doing and take their commands.</td></tr><tr><th scope="row">Tool category</th><td>«tool» Web-based ROS visualization</td></tr><tr><th scope="row">Owner</th><td>Member 2</td></tr><tr><th scope="row">Group</th><td>Authoring & control</td></tr><tr><th scope="row">Deployment</th><td>Desktop; cabin display in ViL</td></tr><tr><th scope="row">Provides</th><td><a class="cref" href="../design.html#I-16">Operator commands</a></td></tr><tr><th scope="row">Requires</th><td><a class="cref" href="../design.html#I-05">Actor states</a>, <a class="cref" href="../design.html#I-08">Clock and sync health</a>, <a class="cref" href="../design.html#I-15">Verdicts and reports</a>, <a class="cref" href="../design.html#I-19">Stack status</a></td></tr></tbody></table></div>
+<h2>Description</h2><p>The operator view in the car shows run state, the stack's status (feature states, faults, touring mode) and the virtual actors around the vehicle, with an always-visible stop button. The engineer view shows campaign progress and verdicts.</p>
+<h2>Key behaviors</h2><ul><li>Status is labeled in text, not only by color.</li></ul>
+<h2>Stage variation</h2><p>Engineer view everywhere; operator view in HIL and ViL.</p>
+<h2>Failure behavior</h2><p>If the operator view freezes, injection stops.</p>
+<h2>Requirements satisfied (7)</h2>
+<ul class="reqlist"><li><a class="ref" href="../requirements.html#FR-15">One-action run start</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#FR-21">Live operator view (ViL)</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#FR-22">Engineer progress view</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#NFR-12">Always-visible stop control</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#NFR-13">Status not shown by color alone</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#SR-02">Start injection only when the stack is ready</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#SR-04">Stop injection on operator command</a> <span class="mk-s">(supporting)</span></li></ul>
+<h2>Related decisions</h2><ul><li><a class="ref" href="../rationale.html#D-08">CSTI has no safety authority</a></li><li><a class="ref" href="../rationale.html#D-12">Run-lifecycle state machine</a></li></ul>
+<p class="crumb">← <a href="C-14.html">Run Evaluator</a></p>
+</main>
+<footer class="site-footer"><div class="inner">Project 1 · Software Design and Quality · Fall 2026 · Team of five (Members 1–5). Hardware and vehicle details are generic by design.</div></footer>
+</body>
+</html>

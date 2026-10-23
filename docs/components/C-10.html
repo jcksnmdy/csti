@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Time & Sync Service — Cross-Stage Test Infrastructure</title>
+<link rel="stylesheet" href="../css/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <p class="site-title"><a href="../index.html">Cross-Stage Test Infrastructure (CSTI)</a></p>
+    <p class="site-subtitle">One scenario, every stage: MiL &rarr; PiL &rarr; HIL &rarr; Vehicle-in-the-Loop</p>
+    <nav class="site-nav" aria-label="Site"><ul><li><a href="../index.html">Overview</a></li><li><a href="../requirements.html">Requirements</a></li><li><a href="../design.html" aria-current="page">Design</a></li><li><a href="../integration.html">Fusion</a></li><li><a href="../traceability.html">Traceability</a></li><li><a href="../rationale.html">Rationale</a></li><li><a href="../evolution.html">Evolution</a></li><li><a href="../glossary.html">Glossary</a></li></ul></nav>
+  </div>
+</header>
+<main>
+<div class="page-head"><h1>Time & Sync Service</h1></div>
+
+<p class="crumb"><a href="../design.html#components">Design</a> › Time & Sync Service</p>
+<div class="table-wrap"><table class="kv"><tbody><tr><th scope="row">Responsibility</th><td>Be the single clock for each stage.</td></tr><tr><th scope="row">Tool category</th><td>«tool» Time synchronization service</td></tr><tr><th scope="row">Owner</th><td>Member 5</td></tr><tr><th scope="row">Group</th><td>Simulation runtime</td></tr><tr><th scope="row">Deployment</th><td>Desktop in MiL; on the bench and vehicle, a separate Intrepid data logger</td></tr><tr><th scope="row">Provides</th><td><a class="cref" href="../design.html#I-08">Clock and sync health</a></td></tr><tr><th scope="row">Requires</th><td><a class="cref" href="../design.html#I-03">Run control</a></td></tr></tbody></table></div>
+<h2>Description</h2><p>MiL and PiL use simulated time, so desktop runs are repeatable. In co-simulation the AURELION Setup block's synchronization pipeline keeps Simulink and AURELION in step at the configured update rate (20 ms in the team's setup). HIL uses the real-time target clock; ViL uses GNSS time, the same base the ingest middleware uses.</p>
+<h2>Key behaviors</h2><ul><li>Reports clock offsets so timing problems are caught.</li></ul>
+<h2>Stage variation</h2><p>Simulated time in MiL and PiL, real time in HIL and ViL.</p>
+<h2>Failure behavior</h2><p>Losing the time reference stops injection.</p>
+<h2>Requirements satisfied (5)</h2>
+<ul class="reqlist"><li><a class="ref" href="../requirements.html#FR-19">Replay any run in MiL</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#NFR-05">Injection latency limit</a> <span class="mk-s">(supporting)</span></li><li><a class="ref" href="../requirements.html#NFR-06">Clock offset limit</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#NFR-08">Deterministic MiL runs</a> <span class="mk-p">(primary)</span></li><li><a class="ref" href="../requirements.html#NFR-11">Faithful replay timing</a> <span class="mk-s">(supporting)</span></li></ul>
+<h2>Related decisions</h2><ul><li><a class="ref" href="../rationale.html#D-05">One clock master per stage</a></li></ul>
+<p class="crumb">← <a href="C-09.html">Ego-State Bridge</a> · <a href="C-11.html">Stack Interface Gateway</a> →</p>
+</main>
+<footer class="site-footer"><div class="inner">Project 1 · Software Design and Quality · Fall 2026 · Team of five (Members 1–5). Hardware and vehicle details are generic by design.</div></footer>
+</body>
+</html>
